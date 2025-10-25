@@ -21,7 +21,7 @@ export function getRegion(latitude, longitude) {
         let dist = pointToPolygonDistance(
             point([longitude, latitude]),
             polygons[region],
-            "meters",
+            { units: 'meters' },
             "planar"
         );
 
@@ -30,9 +30,9 @@ export function getRegion(latitude, longitude) {
             closestRegion = region;
         }
     }
-    if (minDistance > 0.2) {
+
+    if (minDistance > 200) {
         return "Off Campus"
     }
-
     return closestRegion;
 }
