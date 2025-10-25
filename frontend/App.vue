@@ -3,7 +3,9 @@
   <div class="chatBox">
     <ul>
       <li class="msg" v-for="msg in messages">
-        {{  msg }}
+        <span :class="msg[0] == alias ? 'sender you' : 'sender'">
+          {{  msg[0] == alias ? "(you)" : msg[0] }}:
+        </span> {{ msg[1] }}
       </li>
     </ul>
   </div>
@@ -11,6 +13,7 @@
     <input placeholder="send a message" required maxlength="50" v-model="msg">
     <button>send</button>
   </form>
+  <sub class="alias">chatting as "{{ alias }}"</sub>
 </template>
 
 <style scoped>
@@ -18,7 +21,7 @@
     background: linear-gradient(20deg, rgb(56, 194, 56), 20%, rgb(40, 126, 247));
     background-clip: text;
     color: transparent;
-    font-size: 3vw;
+    font-size: 5vh;
   }
 
   .chatBox {
@@ -36,8 +39,7 @@
   }
 
   .msg::marker {
-    content: "> ";
-    font-weight: 700;
+    display: none;
   }
 
   .messageForm {
@@ -46,6 +48,18 @@
   .messageForm > input, button {
         font-size: 2.5vh;
   }
+
+  .alias {
+    font-size: 2vh;
+  }
+
+  .sender {
+    font-weight: 600;
+  }
+  .you {
+    color: red;
+    font-style: italic;
+  }
 </style>  
 
 <script setup>
@@ -53,15 +67,27 @@
 
   const messages = ref([]);
   const msg = ref("");
+  const alias = ref("");
 
   const socket = new WebSocket("ws://localhost:3000");
 
   socket.addEventListener("open", (event) => {
-    socket.send("Hello Server!");
+    //socket.send("Hello Server!");
   });
 
   socket.addEventListener("message", (event) => {
-    messages.value.push(event.data);
+    const msg = JSON.parse(event.data);
+
+    switch (msg.type) {
+      case "alias":
+        alias.value = msg.alias;
+        break;
+      case "incoming message":
+        messages.value.push([msg.message.alias, msg.message.message]);
+        break;
+      default:
+        console.error("invalid message sent from server");
+    }
   });
 
   if ("geolocation" in navigator) {
