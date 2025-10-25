@@ -1,11 +1,14 @@
-import express from "express";
-const app = express();
-const port = 3000;
+import { WebSocketServer } from 'ws';
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-})
+const wss = new WebSocketServer({ port: 3000 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-})
+wss.on('connection', function connection(ws) {
+  ws.on('error', console.error);
+
+  ws.on('message', function message(data) {
+    console.log('received: %s', data);
+  });
+
+  let message = 0;
+  setInterval(() => ws.send(`message: ${message++}`), 1000);
+});

@@ -2,7 +2,7 @@
   "name": "geolocation_chat",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"node backend/main.js\" \"vite serve frontend/\""
+    "dev": "concurrently \"node --watch backend/main.js\" \"vite serve frontend/\""
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "vite": "^7.1.12"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "vue": "^3.5.22"
+    "vue": "^3.5.22",
+    "ws": "^8.18.3"
   }
 }
