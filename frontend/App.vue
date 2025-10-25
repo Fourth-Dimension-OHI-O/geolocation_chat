@@ -14,7 +14,7 @@
     <button>send</button>
   </form>
   <span class="alias">chatting as "{{ alias }}"</span> <br />
-  <span class="alias">location accuracy: {{ Math.round(locationAccuracy.toFixed(2)) }}m</span>
+  <span v-if="locationAccuracy > 100" class="accuracy">location accuracy: {{ Math.round(locationAccuracy.toFixed(0)) }}m</span>
 </template>
 
 <style scoped>
@@ -65,6 +65,11 @@
     color: blueviolet;
     font-style: italic;
   }
+
+  .accuracy {
+    font-size: 2vh;
+    color: red;
+  }
 </style>  
 
 <script setup>
@@ -73,7 +78,7 @@
   const messages = ref([]);
   const msg = ref("");
   const alias = ref("");
-  const locationAccuracy = ref(0.0);
+  const locationAccuracy = ref(0);
 
   const socket = new WebSocket("ws://localhost:3000");
 
