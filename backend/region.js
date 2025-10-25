@@ -22,7 +22,7 @@ function getRegion(latitude, longitude) {
             "meters",
             "planar"
         );
-        console.log(minDistance);
+
         if (dist < minDistance) {
             minDistance = dist;
             closestRegion = region;
@@ -31,5 +31,5 @@ function getRegion(latitude, longitude) {
 
     return closestRegion;
 }
-console.log(polygons)
-console.log(getRegion(39.9931, -83.0200));
+
+console.log(getRegion(40.004920, -83.012943)); // Clock tower coords
