@@ -1,0 +1,24 @@
+{
+  "name": "geolocation_chat",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"node backend/main.js\" \"vite serve frontend/\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fourth-Dimension-OHI-O/geolocation_chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Fourth-Dimension-OHI-O/geolocation_chat/issues"
+  },
+  "homepage": "https://github.com/Fourth-Dimension-OHI-O/geolocation_chat#readme",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "concurrently": "^9.2.1",
+    "vite": "^7.1.12"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "vue": "^3.5.22"
+  }
+}
