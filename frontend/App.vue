@@ -1,10 +1,41 @@
 <template>
-  <ul>
-    <li v-for="msg in messages">
-      {{  msg }}
-    </li>
-  </ul>
+  <h1 class="title">geolocation chat</h1>
+  <div class="chatBox">
+    <ul>
+      <li class="msg" v-for="msg in messages">
+        {{  msg }}
+      </li>
+    </ul>
+  </div>
 </template>
+
+<style scoped>
+  .title {
+    background: linear-gradient(20deg, rgb(56, 194, 56), 20%, rgb(40, 126, 247));
+    background-clip: text;
+    color: transparent;
+    font-size: 3vw;
+  }
+
+  .chatBox {
+    height: 50vh; 
+    border: 1px solid black;
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse;
+
+    font-size: 3vh;
+  }
+
+  .msg {
+    padding-bottom: .67em;
+  }
+
+  .msg::marker {
+    content: "> ";
+    font-weight: 700;
+  }
+</style>  
 
 <script setup>
   import { ref } from "vue";
