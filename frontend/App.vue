@@ -11,7 +11,7 @@
 
   console.log("[Startup Marker]");
 
-  if (!geolocation_on) {
+  if (!("geolocation" in navigator)) {
     console.log("Warning: Geolocation disabled in this browser");
   }
 
