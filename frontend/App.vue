@@ -3,7 +3,7 @@
   <div class="chatBox">
     <ul>
       <li class="msg" v-for="msg in messages">
-        <span :class="msg[0] == alias ? 'sender you' : 'sender'">
+        <span :class="'sender ' + (msg[0] == 'system' ? 'system' : (msg[0] == alias ? 'you' : ''))">
           {{  msg[0] == alias ? "(you)" : msg[0] }}:
         </span> {{ msg[1] }}
       </li>
@@ -60,6 +60,10 @@
     color: red;
     font-style: italic;
   }
+  .system {
+    color: blueviolet;
+    font-style: italic;
+  }
 </style>  
 
 <script setup>
@@ -84,6 +88,9 @@
         break;
       case "incoming message":
         messages.value.push([msg.message.alias, msg.message.message]);
+        break;
+      case "region":
+        messages.value.push(["system", `now connected to region "${msg.region}"`]);
         break;
       default:
         console.error("invalid message sent from server");

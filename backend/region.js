@@ -2,16 +2,18 @@ import { point, pointToPolygonDistance, polygon } from "@turf/turf";
 import fs from 'fs';
 
 const polygonData = fs.readFileSync('./backend/OSU_MAP_FINAL.json', 'utf8');
-let polygonJSON = JSON.parse(polygonData);
-let features = polygonJSON.features;
-const polygons = {};
+const polygonJSON = JSON.parse(polygonData);
+const features = polygonJSON.features;
+let polygons = {};
 
 for (var i = 0; i < features.length; i++) {
     let name = features[i].properties.Name;
     polygons[name] = polygon(features[i].geometry.coordinates);
 }
 
-function getRegion(latitude, longitude) {
+export const regionNames = Object.entries(polygons).map(kv => kv[0]);
+
+export function getRegion(latitude, longitude) {
     let closestRegion = "None";
     let minDistance = 1000000;
 
@@ -31,5 +33,3 @@ function getRegion(latitude, longitude) {
 
     return closestRegion;
 }
-
-console.log(getRegion(40.004920, -83.012943)); // Clock tower coords

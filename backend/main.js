@@ -1,12 +1,13 @@
 import { WebSocketServer } from 'ws';
 import EventEmitter from "node:events";
+import { regionNames, getRegion } from './region.js';
 
 const wss = new WebSocketServer({ port: 3000 });
 
 const colors = ["red", "orange", "yellow", "green", "blue", "purple", "white", "brown", "gray", "black"];
 const animals = ["dog", "cat", "horse", "tiger", "lion", "rabbit", "fox", "bear", "wolf", "deer", "cow", "goat", "sheep", "pig", "eagle", "hawk", "owl", "crow", "dolphin", "whale", "shark", "seal", "bat", "frog", "snake", "lizard", "camel", "moose", "otter", "raccoon", "squirrel", "kangaroo", "koala", "panda", "hedgehog", "porcupine", "cheetah", "jaguar", "leopard", "buffalo", "hyena", "goose", "swan", "pigeon", "turkey", "parrot", "pelican", "penguin", "flamingo", "alligator", "crocodile", "turtle", "tortoise", "crab", "lobster", "squid", "octopus", "shrimp", "clam"];
 
-const eventEmitter = new EventEmitter();
+const chats = new Map(regionNames.map(name => [name, new EventEmitter()]));
 
 wss.on('connection', async function connection(ws, req) {
   const i = Math.floor(Math.random()*(colors.length-1));
@@ -19,6 +20,10 @@ wss.on('connection', async function connection(ws, req) {
   let region = "";
   console.log(`user "${alias}" connected (${req.socket.remoteAddress})`);
 
+  const dispatchMsg = (msg) => {
+    ws.send(JSON.stringify(msg));
+  };
+
   ws.on('message', function message(data) {
     const msg = JSON.parse(data);
 
@@ -26,25 +31,44 @@ wss.on('connection', async function connection(ws, req) {
       case "location":
         const lat = msg.coords.latitude;
         const long = msg.coords.longitude;
-        // TODO: change this to set user region
-        console.log(`user "${alias}" sent location ${lat}, ${long}`);
+        const newRegion = getRegion(lat, long);
+        if (newRegion != region) {
+          if (region.length > 0) {
+            const oldEmitter = chats.get(region);
+            if (oldEmitter != undefined) {
+              oldEmitter.removeListener("chat", dispatchMsg);
+            }
+          }
+          region = newRegion;
+          console.log(`"${region}"`);
+          const newEmitter = chats.get(region);
+          if (newEmitter != undefined) {
+            newEmitter.addListener("chat", dispatchMsg);
+          }
+
+          ws.send(JSON.stringify({
+            type: "region",
+            region: region
+          }));
+
+          console.log(`user "${alias}" connected to region "${region}"`);
+        }
         break;
       case "chat":
-        eventEmitter.emit("chat", {
-          type: "incoming message",
-          message: {
-            alias: alias,
-            message: msg.message
-          }
-        })
+        const eventEmitter = chats.get(region);
+        if (eventEmitter != undefined) {
+          eventEmitter.emit("chat", {
+            type: "incoming message",
+            message: {
+              alias: alias,
+              message: msg.message
+            }
+          });
+        }
         break;
       default:
         console.error(`invalid message sent from user "${alias}`)
     }
   });
   ws.on('error', console.error);
-
-  eventEmitter.on("chat", function (msg) {
-    ws.send(JSON.stringify(msg));
-  });
 });
