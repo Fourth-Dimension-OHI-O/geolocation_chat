@@ -50,6 +50,13 @@ wss.on('connection', async function connection(ws, req) {
           console.log(`"${region}"`);
           const newEmitter = chats.get(region);
           if (newEmitter != undefined) {
+            newEmitter.emit("chat", {
+              type: "incoming message",
+              message: {
+                alias: "system",
+                message: `"${alias}" is here!`
+              }
+            })
             newEmitter.addListener("chat", dispatchMsg);
           }
 
@@ -84,4 +91,16 @@ wss.on('connection', async function connection(ws, req) {
     }
   });
   ws.on('error', console.error);
+  ws.on('close', (n, r) => {
+    let emitter = chats.get(region);
+    if (emitter != region) {
+      emitter.emit("chat", {
+        type: "incoming message",
+        message: {
+          alias: "system", 
+          message: `"${alias}" left region "${region}"`
+        }
+      })
+    }
+  });
 });
