@@ -30,6 +30,9 @@ export function getRegion(latitude, longitude) {
             closestRegion = region;
         }
     }
+    if (minDistance > 0.2) {
+        return "Off Campus"
+    }
 
     return closestRegion;
 }

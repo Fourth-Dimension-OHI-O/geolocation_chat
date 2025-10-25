@@ -4,6 +4,8 @@ import { regionNames, getRegion } from './region.js';
 
 const wss = new WebSocketServer({ port: 3000 });
 
+const rateLimitMS = 1000;
+
 const colors = ["red", "orange", "yellow", "green", "blue", "purple", "white", "brown", "gray", "black"];
 const animals = ["dog", "cat", "horse", "tiger", "lion", "rabbit", "fox", "bear", "wolf", "deer", "cow", "goat", "sheep", "pig", "eagle", "hawk", "owl", "crow", "dolphin", "whale", "shark", "seal", "bat", "frog", "snake", "lizard", "camel", "moose", "otter", "raccoon", "squirrel", "kangaroo", "koala", "panda", "hedgehog", "porcupine", "cheetah", "jaguar", "leopard", "buffalo", "hyena", "goose", "swan", "pigeon", "turkey", "parrot", "pelican", "penguin", "flamingo", "alligator", "crocodile", "turtle", "tortoise", "crab", "lobster", "squid", "octopus", "shrimp", "clam"];
 
@@ -18,6 +20,7 @@ wss.on('connection', async function connection(ws, req) {
     alias:  alias
   }));
   let region = "";
+  let lastMessageTime = Date.now();
   console.log(`user "${alias}" connected (${req.socket.remoteAddress})`);
 
   const dispatchMsg = (msg) => {
@@ -55,6 +58,12 @@ wss.on('connection', async function connection(ws, req) {
         }
         break;
       case "chat":
+        if (Date.now() - lastMessageTime < rateLimitMS) {
+          lastMessageTime = Date.now()
+          break;
+        }
+        lastMessageTime = Date.now()
+
         const eventEmitter = chats.get(region);
         if (eventEmitter != undefined) {
           eventEmitter.emit("chat", {
