@@ -9,6 +9,14 @@
 <script setup>
   import { ref } from "vue";
 
+  console.log("[Startup Marker]");
+
+  var geolocation_on = ("geolocation" in navigator);
+  console.log(geolocation_on);
+  if (!geolocation_on) {
+    console.log("Warning: Geolocation disabled in this browser");
+  }
+
   const messages = ref([]);
 
   const socket = new WebSocket("ws://localhost:3000");
@@ -20,4 +28,28 @@
   socket.addEventListener("message", (event) => {
     messages.value.push(event.data);
   });
+
+  setInterval(() => {
+    send_location()
+  }, 5000);
+
+  async function send_location() {
+    if (!("geolocation" in navigator)) {
+      return [0,0];
+    }
+    var lat = 0;
+    var long = 0;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        lat = pos.coords.latitude;
+        long = pos.coords.longitude;
+        socket.send("Lat: " + lat + ", Long: " + long)
+      },
+      (e) => {
+        console.log("Warning: Geolocation returned error");
+        return;
+      }
+    );
+  }
+
 </script>
