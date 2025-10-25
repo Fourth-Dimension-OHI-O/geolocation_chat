@@ -19,7 +19,11 @@ wss.on('connection', async function connection(ws, req) {
     type: "alias",
     alias:  alias
   }));
-  let region = "";
+  let region = "Off Campus";
+  ws.send(JSON.stringify({
+    type: "region",
+    region: region
+  }));
   let lastMessageTime = Date.now();
   console.log(`user "${alias}" connected (${req.socket.remoteAddress})`);
 

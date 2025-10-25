@@ -12,6 +12,7 @@ for (var i = 0; i < features.length; i++) {
 }
 
 export const regionNames = Object.entries(polygons).map(kv => kv[0]);
+regionNames.push("Off Campus");
 
 export function getRegion(latitude, longitude) {
     let closestRegion = "None";

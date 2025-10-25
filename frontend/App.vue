@@ -13,7 +13,8 @@
     <input placeholder="send a message" required maxlength="50" v-model="msg">
     <button>send</button>
   </form>
-  <sub class="alias">chatting as "{{ alias }}"</sub>
+  <span class="alias">chatting as "{{ alias }}"</span> <br />
+  <span class="alias">location accuracy: {{ Math.round(locationAccuracy.toFixed(2)) }}m</span>
 </template>
 
 <style scoped>
@@ -72,6 +73,7 @@
   const messages = ref([]);
   const msg = ref("");
   const alias = ref("");
+  const locationAccuracy = ref(0.0);
 
   const socket = new WebSocket("ws://localhost:3000");
 
@@ -100,6 +102,8 @@
   if ("geolocation" in navigator) {
     navigator.geolocation.watchPosition(
       (pos) => {
+        locationAccuracy.value = pos.coords.accuracy;
+
         socket.send(JSON.stringify({
           type: "location",
           coords: {
