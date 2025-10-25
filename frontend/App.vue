@@ -7,6 +7,10 @@
       </li>
     </ul>
   </div>
+  <form @submit.prevent="sendMsg" class="messageForm">
+    <input placeholder="send a message" required maxlength="50" v-model="msg">
+    <button>send</button>
+  </form>
 </template>
 
 <style scoped>
@@ -35,12 +39,20 @@
     content: "> ";
     font-weight: 700;
   }
+
+  .messageForm {
+    padding-top: 1em;
+  }
+  .messageForm > input, button {
+        font-size: 2.5vh;
+  }
 </style>  
 
 <script setup>
   import { ref } from "vue";
 
   const messages = ref([]);
+  const msg = ref("");
 
   const socket = new WebSocket("ws://localhost:3000");
 
@@ -68,4 +80,11 @@
       }, {enableHighAccuracy: true})
   }
 
+  function sendMsg() {
+    socket.send(JSON.stringify({
+      type: "chat",
+      message: msg.value
+    }));
+    msg.value = "";
+  }
 </script>
