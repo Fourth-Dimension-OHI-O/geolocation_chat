@@ -34,7 +34,7 @@
 
   .chatBox {
     height: 50vh; 
-    border: .1em solid black;
+    border: .1em solid #d1d1d1;
     border-radius: 1em;
     overflow: auto;
     display: flex;
@@ -98,7 +98,7 @@
 <style scoped>
   @media (prefers-color-scheme: dark) {
     .chatBox {
-      border-color: lightgray;
+      border-color: #676767;
     }
 
     .system {
