@@ -18,6 +18,10 @@
 </template>
 
 <style scoped>
+  form > * {
+    font-family: InterVariable;
+  }
+
   .title {
     background: linear-gradient(20deg, rgb(56, 194, 56), 20%, rgb(40, 126, 247));
     background-clip: text;
@@ -70,7 +74,34 @@
     font-size: 2vh;
     color: red;
   }
+
+  form > input {
+    height: 2em;
+    border: .1em solid lightgray;
+    border-radius: .4em;
+  }
+
+  form > button {
+    color: white;
+    background-color: rgb(17, 49, 231);
+    border: none;
+    border-radius: .5em;
+    padding: .4em;
+    margin-left: .3em;
+  }
 </style>  
+
+<style scoped>
+  @media (prefers-color-scheme: dark) {
+    .chatBox {
+      border-color: lightgray;
+    }
+
+    .system {
+      color: violet;
+    }
+  }
+</style>
 
 <script setup>
   import { ref } from "vue";
