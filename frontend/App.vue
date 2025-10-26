@@ -62,13 +62,14 @@
 
   .sender {
     font-weight: 600;
+    color: rgb(12, 81, 185);
   }
   .you {
-    color: red;
+    color: red !important;
     font-style: italic;
   }
   .system {
-    color: blueviolet;
+    color: blueviolet !important;
     font-style: italic;
   }
 

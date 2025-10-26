@@ -6,15 +6,16 @@ const wss = new WebSocketServer({ port: 3000 });
 
 const rateLimitMS = 1000;
 
-const colors = ["red", "orange", "yellow", "green", "blue", "purple", "white", "brown", "gray", "black"];
-const animals = ["dog", "cat", "horse", "tiger", "lion", "rabbit", "fox", "bear", "wolf", "deer", "cow", "goat", "sheep", "pig", "eagle", "hawk", "owl", "crow", "dolphin", "whale", "shark", "seal", "bat", "frog", "snake", "lizard", "camel", "moose", "otter", "raccoon", "squirrel", "kangaroo", "koala", "panda", "hedgehog", "porcupine", "cheetah", "jaguar", "leopard", "buffalo", "hyena", "goose", "swan", "pigeon", "turkey", "parrot", "pelican", "penguin", "flamingo", "alligator", "crocodile", "turtle", "tortoise", "crab", "lobster", "squid", "octopus", "shrimp", "clam"];
+const colors = ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "White", "Brown", "Gray", "Black"];
+const animals = ["Dog", "Cat", "Horse", "Tiger", "Lion", "Rabbit", "Fox", "Bear", "Wolf", "Deer", "Cow", "Goat", "Sheep", "Pig", "Eagle", "Hawk", "Owl", "Crow", "Dolphin", "Whale", "Shark", "Seal", "Bat", "Frog", "Snake", "Lizard", "Camel", "Moose", "Otter", "Raccoon", "Squirrel", "Kangaroo", "Koala", "Panda", "Hedgehog", "Porcupine", "Cheetah", "Jaguar", "Leopard", "Buffalo", "Hyena", "Goose", "Swan", "Pigeon", "Turkey", "Parrot", "Pelican", "Penguin", "Flamingo", "Alligator", "Crocodile", "Turtle", "Tortoise", "Crab", "Lobster", "Squid", "Octopus", "Shrimp", "Clam"];
 
 const chats = new Map(regionNames.map(name => [name, new EventEmitter()]));
 
 wss.on('connection', async function connection(ws, req) {
   const i = Math.floor(Math.random()*(colors.length-1));
   const j = Math.floor(Math.random()*(animals.length-1));
-  const alias = colors[i] + " " + animals[j];
+  const k = Math.floor(Math.random()*1000);
+  const alias = `${colors[i]}${animals[j]}${k}`;
   ws.send(JSON.stringify({
     type: "alias",
     alias:  alias
