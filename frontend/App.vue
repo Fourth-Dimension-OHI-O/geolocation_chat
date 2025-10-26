@@ -118,21 +118,27 @@
   const locationAccuracy = ref(0);
 
   let socket;
-  let interval = 0;
   const status = ref(WebSocket.CLOSED);
   function connect() {
+    if (socket != undefined) {
+      socket.close();
+    }
     socket = new WebSocket(import.meta.env.PROD ? "wss://geolocationchat-production.up.railway.app" : "ws://localhost:3000");
     status.value = socket.readyState;
 
     socket.addEventListener("open", (event) => {
-      clearInterval(interval);
       status.value = socket.readyState;
     });
 
     socket.addEventListener("close", (event) => {
-      interval = setInterval(connect, 3000);
+      connect();
       status.value = socket.readyState;
     });
+
+    socket.addEventListener("error", (event) => {
+      socket.close();
+      status.value = socket.readyState;
+    })
 
     socket.addEventListener("message", (event) => {
       const msg = JSON.parse(event.data);
