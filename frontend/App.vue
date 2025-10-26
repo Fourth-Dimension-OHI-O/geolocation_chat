@@ -13,10 +13,10 @@
     <input placeholder="send a message" required maxlength="50" v-model="msg">
     <button>send</button>
   </form>
-  <span class="alias">chatting as "{{ alias }}"</span> <br />
+  <span class="alias">chatting as <i>{{ alias }}</i></span> <br />
   <span v-if="locationAccuracy > 100" class="accuracy">Reduced location accuracy</span>
   <footer style="text-align: center; margin-top: 5em;">
-    <small>© 2025 Rohan Nishant, Ethan Grieshop, Pranav Rajesh, Ved Vyas</small>
+    <small>©2025 Rohan Nishant, Ethan Grieshop, Pranav Rajesh, Ved Vyas</small>
   </footer>
 </template>
 
