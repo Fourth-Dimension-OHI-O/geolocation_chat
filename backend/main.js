@@ -21,6 +21,7 @@ wss.on('connection', async function connection(ws, req) {
     alias:  alias
   }));
   let lastMessageTime = Date.now();
+  console.log(req.headers["X-Forwarded-For"]);
   console.log(`user "${alias}" connected (${req.socket.remoteAddress})`);
   let region = "Off Campus";
 
