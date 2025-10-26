@@ -55,9 +55,11 @@ wss.on('connection', async function connection(ws, req) {
         const long = msg.coords.longitude;
         const newRegion = getRegion(lat, long);
         if (newRegion != region) {
-          chats.forEach(emitter => {
-            emitter.removeListener(dispatchMsg);
-          });
+          if (dispatchMsg != undefined) {
+            chats.forEach(emitter => {
+              emitter.removeListener(dispatchMsg);
+            });
+          }
           region = newRegion;
           console.log(`"${region}"`);
           const newEmitter = chats.get(region);
@@ -114,6 +116,11 @@ wss.on('connection', async function connection(ws, req) {
           alias: "system", 
           message: `"${alias}" left region "${region}"`
         }
+      })
+    }
+    if (dispatchMsg != undefined) {
+      chats.forEach(em => {
+        em.removeListener(dispatchMsg);
       })
     }
   });

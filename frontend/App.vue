@@ -132,11 +132,12 @@
     });
 
     socket.addEventListener("close", (event) => {
-      connect();
+      //connect();
       status.value = socket.readyState;
     });
 
     socket.addEventListener("error", (event) => {
+      alert(event);
       socket.close();
       status.value = socket.readyState;
     })
