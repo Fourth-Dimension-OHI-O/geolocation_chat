@@ -45,10 +45,7 @@
 
   .msg {
     padding-bottom: .67em;
-  }
-
-  .msg::marker {
-    display: none;
+    list-style-type: none;
   }
 
   .messageForm {

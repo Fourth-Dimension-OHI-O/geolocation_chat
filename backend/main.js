@@ -30,6 +30,13 @@ wss.on('connection', async function connection(ws, req) {
   const dispatchMsg = (msg) => {
     ws.send(JSON.stringify(msg));
   };
+  
+  {
+    const em = chats.get("Off Campus");
+    if (em != undefined) {
+      em.addListener("chat", dispatchMsg);
+    }
+  }
 
   ws.on('message', function message(data) {
     const msg = JSON.parse(data);
