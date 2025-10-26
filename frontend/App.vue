@@ -14,7 +14,7 @@
     <button>send</button>
   </form>
   <span class="alias">chatting as <i>{{ alias }}</i></span> <br />
-  <div v-html="connectionStatus()" class="status"></div>
+  <span :style="connectionStatusStyle(status)">{{ connectionStatusText(status) }}</span> <br />
   <span v-if="locationAccuracy > 100" class="accuracy">Reduced location accuracy</span> <br />
   <footer style="text-align: center; margin-top: 4em;">
     <small>©2025 Rohan Nishant, Ethan Grieshop, Pranav Rajesh, Ved Vyas</small>
@@ -120,6 +120,7 @@
 
   let socket;
   const status = ref(WebSocket.CLOSED);
+  let posWatch;
   function connect() {
     if (socket != undefined) {
       socket.close();
@@ -129,18 +130,39 @@
 
     socket.addEventListener("open", (event) => {
       status.value = socket.readyState;
+
+      if ("geolocation" in navigator) {
+        posWatch = navigator.geolocation.watchPosition(
+          (pos) => {
+            locationAccuracy.value = pos.coords.accuracy;
+
+            if (locationAccuracy.value < 100) {
+              socket.send(JSON.stringify({
+                type: "location",
+                coords: {
+                  latitude: pos.coords.latitude,
+                  longitude: pos.coords.longitude
+                }
+              }));
+            }
+
+          },
+          (e) => {
+            console.error(e.message);
+          }, {enableHighAccuracy: true});
+      }
     });
 
     socket.addEventListener("close", (event) => {
-      //connect();
       status.value = socket.readyState;
+      navigator.geolocation.clearWatch(posWatch);
+      setTimeout(connect, 5000);
     });
 
     socket.addEventListener("error", (event) => {
       console.error(JSON.stringify(event));
       socket.close();
       status.value = socket.readyState;
-      setTimeout(connect, 5000);
     })
 
     socket.addEventListener("message", (event) => {
@@ -164,28 +186,6 @@
     });
   }
   connect();
-  
-
-  if ("geolocation" in navigator) {
-    navigator.geolocation.watchPosition(
-      (pos) => {
-        locationAccuracy.value = pos.coords.accuracy;
-
-        if (locationAccuracy.value < 100) {
-          socket.send(JSON.stringify({
-            type: "location",
-            coords: {
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude
-            }
-          }));
-        }
-
-      },
-      (e) => {
-        console.error(e.message);
-      }, {enableHighAccuracy: true})
-  }
 
   function sendMsg() {
     socket.send(JSON.stringify({
@@ -195,14 +195,25 @@
     msg.value = "";
   }
 
-  function connectionStatus(ws) {
-    switch (status.value) {
+  function connectionStatusStyle(s) {
+    switch (s) {
       case WebSocket.OPEN:
-        return `<span style="color: lightgreen">connected</span>`;
+        return "color: lightgreen"
       case WebSocket.CONNECTING:
-        return `<span style="color: #f5c242">connecting...</span>`;
+        return "color: #f5c242"
       default:
-        return `<span style="color: red">disconnected</span>`
+        return "color: red"
+    }
+  }
+
+  function connectionStatusText(s) {
+    switch (s) {
+      case WebSocket.OPEN:
+        return "connected"
+      case WebSocket.CONNECTING:
+        return "connecting..."
+      default:
+        return "disconnected"
     }
   }
 </script>
