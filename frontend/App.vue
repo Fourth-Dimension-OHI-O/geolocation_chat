@@ -20,7 +20,7 @@
     <summary>about</summary>
     This application lets you talk to others in the same area of OSU campus that you're in!
     It's anonymous, so your messages aren't signed with your name. If you're not on campus,
-    There's a chat for off campus folks too. You also might get put in the off campus chat if
+    there's a chat for off campus folks too. You also might get put in the off campus chat if
     your device's geolocation is too inaccurate. 
   </details>
   <footer style="text-align: center; margin-top: 2em;">
