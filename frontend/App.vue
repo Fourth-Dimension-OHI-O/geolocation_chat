@@ -137,9 +137,10 @@
     });
 
     socket.addEventListener("error", (event) => {
-      alert(event);
+      console.error(JSON.stringify(event));
       socket.close();
       status.value = socket.readyState;
+      setTimeout(connect, 5000);
     })
 
     socket.addEventListener("message", (event) => {

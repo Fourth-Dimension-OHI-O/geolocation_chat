@@ -59,7 +59,6 @@ wss.on('connection', async function connection(ws, req) {
             emitter.removeListener("chat", dispatchMsg);
           });
           region = newRegion;
-          console.log(`"${region}"`);
           const newEmitter = chats.get(region);
           if (newEmitter != undefined) {
             newEmitter.emit("chat", {
