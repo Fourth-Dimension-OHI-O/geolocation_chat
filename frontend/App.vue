@@ -14,7 +14,7 @@
     <button>send</button>
   </form>
   <span class="alias">chatting as "{{ alias }}"</span> <br />
-  <span v-if="locationAccuracy > 100" class="accuracy">location accuracy: {{ Math.round(locationAccuracy.toFixed(0)) }}m</span>
+  <span v-if="locationAccuracy > 100" class="accuracy">Reduced location accuracy</span>
 </template>
 
 <style scoped>
@@ -109,13 +109,16 @@
       (pos) => {
         locationAccuracy.value = pos.coords.accuracy;
 
-        socket.send(JSON.stringify({
-          type: "location",
-          coords: {
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude
-          }
-        }));
+        if (locationAccuracy.value < 100) {
+          socket.send(JSON.stringify({
+            type: "location",
+            coords: {
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude
+            }
+          }));
+        }
+
       },
       (e) => {
         console.error(e.message);
