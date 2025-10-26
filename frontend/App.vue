@@ -80,7 +80,7 @@
   const alias = ref("");
   const locationAccuracy = ref(0);
 
-  const socket = new WebSocket("ws://localhost:3000");
+  const socket = new WebSocket(import.meta.env.PROD ? "ws://geolocationchat-production.up.railway.app" : "ws://localhost:3000");
 
   socket.addEventListener("open", (event) => {
     //socket.send("Hello Server!");

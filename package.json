@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "concurrently \"node --watch backend/main.js\" \"vite serve frontend/\"",
     "build": "vite build frontend --outDir ./dist",
-    "prod": "concurrently \"http-server ./frontend/dist\" \"node backend/main.js\""
+    "deploy": "npm run build && surge ./frontend/dist --domain geolocationchat.surge.sh"
   },
   "repository": {
     "type": "git",
@@ -17,11 +17,11 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
     "concurrently": "^9.2.1",
+    "surge": "^0.24.6",
     "vite": "^7.1.12"
   },
   "dependencies": {
     "@turf/turf": "^7.2.0",
-    "http-server": "^14.1.1",
     "vue": "^3.5.22",
     "ws": "^8.18.3"
   }
