@@ -14,8 +14,9 @@
     <button>send</button>
   </form>
   <span class="alias">chatting as <i>{{ alias }}</i></span> <br />
-  <span v-if="locationAccuracy > 100" class="accuracy">Reduced location accuracy</span>
-  <footer style="text-align: center; margin-top: 5em;">
+  <div v-html="connectionStatus()" class="status"></div>
+  <span v-if="locationAccuracy > 100" class="accuracy">Reduced location accuracy</span> <br />
+  <footer style="text-align: center; margin-top: 4em;">
     <small>©2025 Rohan Nishant, Ethan Grieshop, Pranav Rajesh, Ved Vyas</small>
   </footer>
 </template>
@@ -69,6 +70,10 @@
   .system {
     color: blueviolet;
     font-style: italic;
+  }
+
+  .status {
+    font-size: 2vh;
   }
 
   .accuracy {
@@ -163,5 +168,16 @@
       message: msg.value
     }));
     msg.value = "";
+  }
+
+  function connectionStatus() {
+    switch (socket.readyState) {
+      case WebSocket.OPEN:
+        return `<span style="color: lightgreen">connected</span>`;
+      case WebSOCKET.CONNECTING:
+        return `<span style="color: #f5c242">connecting...</span>`;
+      default:
+        return `<span style="color: red">disconnected</span>`
+    }
   }
 </script>
