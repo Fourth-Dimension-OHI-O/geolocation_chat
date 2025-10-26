@@ -117,29 +117,45 @@
   const alias = ref("");
   const locationAccuracy = ref(0);
 
-  const socket = new WebSocket(import.meta.env.PROD ? "wss://geolocationchat-production.up.railway.app" : "ws://localhost:3000");
+  let socket;
+  let interval = 0;
+  const status = ref(WebSocket.CLOSED);
+  function connect() {
+    socket = new WebSocket(import.meta.env.PROD ? "wss://geolocationchat-production.up.railway.app" : "ws://localhost:3000");
+    status.value = socket.readyState;
 
-  socket.addEventListener("open", (event) => {
-    //socket.send("Hello Server!");
-  });
+    socket.addEventListener("open", (event) => {
+      clearInterval(interval);
+      status.value = socket.readyState;
+    });
 
-  socket.addEventListener("message", (event) => {
-    const msg = JSON.parse(event.data);
+    socket.addEventListener("close", (event) => {
+      interval = setInterval(connect, 3000);
+      status.value = socket.readyState;
+    });
 
-    switch (msg.type) {
-      case "alias":
-        alias.value = msg.alias;
-        break;
-      case "incoming message":
-        messages.value.push([msg.message.alias, msg.message.message]);
-        break;
-      case "region":
-        messages.value.push(["system", `now connected to region "${msg.region}" (${msg.count} connected)`]);
-        break;
-      default:
-        console.error("invalid message sent from server");
-    }
-  });
+    socket.addEventListener("message", (event) => {
+      const msg = JSON.parse(event.data);
+
+      switch (msg.type) {
+        case "alias":
+          alias.value = msg.alias;
+          break;
+        case "incoming message":
+          messages.value.push([msg.message.alias, msg.message.message]);
+          break;
+        case "region":
+          messages.value.push(["system", `you're connected to region "${msg.region}" (${msg.count} connected)`]);
+          break;
+        default:
+          console.error("invalid message sent from server");
+      }
+
+      status.value = socket.readyState;
+    });
+  }
+  connect();
+  
 
   if ("geolocation" in navigator) {
     navigator.geolocation.watchPosition(
@@ -170,11 +186,11 @@
     msg.value = "";
   }
 
-  function connectionStatus() {
-    switch (socket.readyState) {
+  function connectionStatus(ws) {
+    switch (status.value) {
       case WebSocket.OPEN:
         return `<span style="color: lightgreen">connected</span>`;
-      case WebSOCKET.CONNECTING:
+      case WebSocket.CONNECTING:
         return `<span style="color: #f5c242">connecting...</span>`;
       default:
         return `<span style="color: red">disconnected</span>`
