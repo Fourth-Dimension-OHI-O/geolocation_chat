@@ -129,7 +129,7 @@
         messages.value.push([msg.message.alias, msg.message.message]);
         break;
       case "region":
-        messages.value.push(["system", `now connected to region "${msg.region}"`]);
+        messages.value.push(["system", `now connected to region "${msg.region}" (${msg.count} connected)`]);
         break;
       default:
         console.error("invalid message sent from server");

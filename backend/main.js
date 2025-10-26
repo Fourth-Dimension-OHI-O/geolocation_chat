@@ -19,18 +19,13 @@ wss.on('connection', async function connection(ws, req) {
     type: "alias",
     alias:  alias
   }));
-  let region = "Off Campus";
-  ws.send(JSON.stringify({
-    type: "region",
-    region: region
-  }));
   let lastMessageTime = Date.now();
   console.log(`user "${alias}" connected (${req.socket.remoteAddress})`);
+  let region = "Off Campus";
 
   const dispatchMsg = (msg) => {
     ws.send(JSON.stringify(msg));
   };
-  
   {
     const em = chats.get("Off Campus");
     if (em != undefined) {
@@ -42,6 +37,11 @@ wss.on('connection', async function connection(ws, req) {
         }
       });
       em.addListener("chat", dispatchMsg);
+        ws.send(JSON.stringify({
+        type: "region",
+        region: region,
+        count: em.listenerCount("chat")
+      }));
     }
   }
 
@@ -72,12 +72,13 @@ wss.on('connection', async function connection(ws, req) {
               }
             })
             newEmitter.addListener("chat", dispatchMsg);
-          }
 
-          ws.send(JSON.stringify({
-            type: "region",
-            region: region
-          }));
+            ws.send(JSON.stringify({
+              type: "region",
+              region: region,
+              count: newEmitter.listenerCount("chat")
+            }));
+          }
 
           console.log(`user "${alias}" connected to region "${region}"`);
         }
@@ -107,7 +108,8 @@ wss.on('connection', async function connection(ws, req) {
   ws.on('error', console.error);
   ws.on('close', (n, r) => {
     let emitter = chats.get(region);
-    if (emitter != region) {
+    if (emitter != undefined) {
+      emitter.removeListener("chat", dispatchMsg);
       emitter.emit("chat", {
         type: "incoming message",
         message: {
