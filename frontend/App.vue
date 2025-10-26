@@ -16,7 +16,14 @@
   <span class="alias">chatting as <i>{{ alias }}</i></span> <br />
   <span :style="connectionStatusStyle(status)">{{ connectionStatusText(status) }}</span> <br />
   <span v-if="locationAccuracy > 100" class="accuracy">Reduced location accuracy</span> <br />
-  <footer style="text-align: center; margin-top: 4em;">
+  <details style="margin-top: 1.5em;">
+    <summary>about</summary>
+    This application let's you talk to others in the same are of OSU campus that you're in!
+    It's anonymous, so your messages aren't signed with your name. If you're not on campus,
+    There's a chat for off campus folks too. You also might get put in the off campus chat if
+    your device's geolocation is too inaccurate. 
+  </details>
+  <footer style="text-align: center; margin-top: 2em;">
     <small>©2025 Rohan Nishant, Ethan Grieshop, Pranav Rajesh, Ved Vyas</small>
   </footer>
 </template>
