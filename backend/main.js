@@ -34,6 +34,13 @@ wss.on('connection', async function connection(ws, req) {
   {
     const em = chats.get("Off Campus");
     if (em != undefined) {
+      em.emit("chat", {
+        type: "incoming message",
+        message: {
+          alias: "system",
+          message: `${alias} is here!`
+        }
+      });
       em.addListener("chat", dispatchMsg);
     }
   }
