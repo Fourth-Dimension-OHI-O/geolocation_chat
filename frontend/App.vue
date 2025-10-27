@@ -142,6 +142,7 @@
         posWatch = navigator.geolocation.watchPosition(
           (pos) => {
             locationAccuracy.value = pos.coords.accuracy;
+            console.log(`location accuracy: ${locationAccuracy.value}`);
 
             if (locationAccuracy.value < 100) {
               socket.send(JSON.stringify({
@@ -183,7 +184,8 @@
           messages.value.push([msg.message.alias, msg.message.message]);
           break;
         case "region":
-          messages.value.push(["system", `you're connected to region "${msg.region}" (${msg.count} connected)`]);
+          messages.value.push(["system", `you're connected to region "${msg.region}"`]);
+          console.log(`${msg.region}:  ${msg.count}`);
           break;
         default:
           console.error("invalid message sent from server");
